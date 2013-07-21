@@ -1,7 +1,7 @@
 require.config({
     paths: {
         jquery: 'libs/jquery/jquery',
-        jqueryUI: 'libs/jquery/jquery-ui',
+        jqueryUI: 'libs/jquery/jquery-ui-1.10.2.custom',
         underscore: 'libs/underscore/underscore-min',
         backbone: 'libs/backbone/backbone',
         storage: 'libs/backbone/backbone.localStorage',
@@ -9,7 +9,7 @@ require.config({
     },
 
     shim: {
-            "jquery-ui" : {
+        jqueryUI : {
                 deps: ['jquery']
         },
 
@@ -26,8 +26,22 @@ require.config({
 
 });
 
-require(['jquery','backbone', 'vent','storage'], 
-function($, Backbone, vent, Store){
+require(['jquery','jqueryUI','backbone', 'vent','storage'], 
+function($, jUI, Backbone, vent, Store){
+
+    
+    $( "#watchlist" ).sortable({
+        revert: true
+    });
+
+    $( "#draggable" ).draggable({
+        connectToSortable: "#sortable",
+        helper: "clone",
+        revert: "invalid"
+    });
+
+        //$( "ul, li" ).disableSelection();
+
 
     //Watchlist Module
 
@@ -70,7 +84,7 @@ function($, Backbone, vent, Store){
         },
 
         render : function() {
-            this.$el.html("<div><img src='"+ (this.model.get('thumbnail')) + "'>"+
+            this.$el.html("<div class='ui-state-default'><img src='"+ (this.model.get('thumbnail')) + "'>"+
                     "<h2>"+(this.model.get('title'))+
                     "</h2><button class = 'delete'>X</button></div>");
             
@@ -104,8 +118,6 @@ function($, Backbone, vent, Store){
     //watchlist collection view
     var WatchlistView = Backbone.View.extend({
         el: $('#watchlist'),
-
-
 
         initialize: function(){
             _.bindAll(this, 'addOne');
@@ -146,13 +158,12 @@ function($, Backbone, vent, Store){
     });
 
     //an instance of watchlist collection
-    window.myWatchlistCollection = new WatchlistCollection();
+    var myWatchlistCollection = new WatchlistCollection();
 
     //an instance of the Watchlist Collection view
-    window.myWatchlistView = new WatchlistView({
+    var myWatchlistView = new WatchlistView({
         collection : myWatchlistCollection
     });
-
 
 
     //Search Module ----------------------------------------------------------
