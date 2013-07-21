@@ -1,15 +1,11 @@
-define(['underscore', 'backbone', 'storage', 'models/SearchModel'], 
-function(_, Backbone, Store, SearchModel){
-
+define(['underscore', 'backbone', 'storage', 'models/ShowModel'], 
+function(_, Backbone, Store, ShowModel){
 	var WatchlistCollection = Backbone.Collection.extend({
+        model : ShowModel,
 
-    model: SearchModel,
-    url: 'http://search.guide.getglue.com/objects?q=True%20Blood',
+        localStorage: new Store("show")
 
-    localStorage: new Store("SearchCollection"),
+    });
 
-    
-
-  });
-
+    return WatchlistCollection;
 });

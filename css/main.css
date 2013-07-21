@@ -1,129 +1,174 @@
-ul,li{
-list-style:none;
-}
-ul{
-overflow:hidden;
-padding:1em;
-}
-ul li a{
-text-decoration:none;
-color:#000;
-background:#ffc;
-display:block;
-height:10em;
-width:10em;
-padding:1em;
--moz-box-shadow:5px 5px 7px rgba(33,33,33,1);
--webkit-box-shadow: 5px 5px 7px rgba(33,33,33,.7);
-box-shadow: 5px 5px 7px rgba(33,33,33,.7);
--moz-transition:-moz-transform .15s linear;
--o-transition:-o-transform .15s linear;
--webkit-transition:-webkit-transform .15s linear;
-
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
 }
 
-ul li a p {
-word-wrap: break-word;
-overflow: hidden;
-}
-ul li{
-margin:1em;
-float:left;
-}
-ul li h2{
-font-size:140%;
-font-weight:bold;
-padding-bottom:10px;
-}
-ul li p{
-font-family:"Reenie Beanie",arial,sans-serif;
-font-size:180%;
-}
-ul li a{
--webkit-transform: rotate(-6deg);
--o-transform: rotate(-6deg);
--moz-transform:rotate(-6deg);
-}
-ul li:nth-child(even) a{
--o-transform:rotate(4deg);
--webkit-transform:rotate(4deg);
--moz-transform:rotate(4deg);
-position:relative;
-top:5px;
-background:#cfc;
-}
-ul li:nth-child(3n) a{
--o-transform:rotate(-3deg);
--webkit-transform:rotate(-3deg);
--moz-transform:rotate(-3deg);
-position:relative;
-top:-5px;
-background:#ccf;
-}
-ul li:nth-child(5n) a{
--o-transform:rotate(5deg);
--webkit-transform:rotate(5deg);
--moz-transform:rotate(5deg);
-position:relative;
-top:-10px;
-}
-ul li a:hover,ul li a:focus{
-box-shadow:10px 10px 7px rgba(0,0,0,.7);
--moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);
--webkit-box-shadow: 10px 10px 7px rgba(0,0,0,.7);
--webkit-transform: scale(1.25);
--moz-transform: scale(1.25);
--o-transform: scale(1.25);
-position:relative;
-z-index:5;
-}
-
-#watchlist {
-	width: 280px;
-	height: 1000px;
-	float: left;
-	display: block;
-	background-color: #bada55;
-
+body {
+	font-family:arial,sans-serif;
+	font-size:100%;
+	/*margin:3em;*/
+	background:#666;
+	color:#333;
 }
 
 #search{
 	position: relative;
 	margin-left: 300px;
 	width: auto;
-}
-#search-list div {
-    height: 250px;
-    width: 250px;
-    float: left;
-    display: inline-block;
-    margin-top: 15px;
+	background-color: #eee;
 }
 
-#stickies .todo-destroy {
-position: absolute;
-right: 5px;
-top: 14px;
-display: none;
-cursor: pointer;
-width: 20px;
-height: 20px;
-background: url(destroy.png) no-repeat 0 0;
+#search #create-search h1{
+	font-size: 36px;
+	font-weight: bold;
+	text-align: center;
+	padding: 20px 0 30px 0;
+	line-height: 1;
 }
-#stickies li:hover .todo-destroy {
-display: block;
+#search #create-search	{
+	margin-left:auto;
+    margin-right:auto;
+    width: 800px;
+    padding-bottom: 5px;
+	background-color: #eee;
 }
-#stickies .todo-destroy:hover {
-background-position: 0 -20px;
+
+#search #create-search input{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 400px;
+	font-size: 24px;
+	font-family: inherit;
+	line-height: 1.4em;
+	border: 0;
+	outline: none;
+	padding: 6px;
+	border: 1px solid #999999;
+	-moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+	-o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+	box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+
+}
+
+#search #create-search input:focus{
+	width: 500px;
+
+}
+#search-list .searched-item {
+text-decoration:none;
+background:#d1d1d1;
+height: 250px;
+width: auto;
+float: left;
+display: inline-block;
+margin-top: 15px;
+margin-right: 5px;
+padding: 10px;
+-moz-box-shadow:5px 5px 7px rgba(33,33,33,1);
+-webkit-box-shadow: 5px 5px 7px rgba(33,33,33,.7);
+box-shadow: 5px 5px 7px rgba(33,33,33,.7);
+/*-moz-transition:-moz-transform .15s linear;
+-o-transition:-o-transform .15s linear;
+-webkit-transition:-webkit-transform .15s linear;
+*/
+}
+#search-list h2{
+	word-wrap: break-word;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+#fav-shows {
+	width: 280px;
+	min-height: 500px;
+	float: left;
+	display: block;
+	background-color: #bada55;
+	margin-left: 10px;
+}
+#fav-shows h1{
+	font-size: 36px;
+	font-weight: bold;
+	text-align: center;
+	padding: 20px 0 30px 0;
+	line-height: 1;
+	width: inherit;
+	background-color: #eee;
+}
+
+#watchlist {
+	width: 270px;
+	float: left;
+	display: block;
+	background-color: #bada55;
+	margin-left: 10px;
+
+}
+
+#watchlist .saved-item {
+	text-decoration:none;
+	background:#eee;
+	width: 250px;
+	width: auto;
+	clear: left;
+	display: block;
+	margin-top: 10px;
+	margin-right: 5px;
+	padding: 10px;
+	-moz-box-shadow:1px 4px 5px rgba(33,33,33,1);
+	-webkit-box-shadow: 1px 4px 5px rgba(33,33,33,.7);
+	box-shadow: 1px 4px 5px rgba(33,33,33,.7);
+}
+
+.saved-item .info {
+	float: right;
+	margin-right: 22px;
+	display: inline-block;
+	width: 135px;
+	height: inherit;
+	font-size: 15px;
+	font-weight: bold;
+	word-wrap: break-word;
+  	overflow: hidden;
+}
+.saved-item img{
+	display: inline-block;
+	height: 80px;
 }
 
 
-#recycle-bin p{
-position: relative;  
-font-size: 30px;
-font-weight: bold;  
-margin-top: 0;  
-font-family: helvetica, arial, sans-serif;  
-/*text-shadow: 2px 3px 3px #292929;  */
-letter-spacing: -1px;
+.saved-item span.delete {
+	position: relative;
+	left: 230px;
+	bottom: 90px;
+	display: none;
+	cursor: pointer;
+	float: left;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: url(destroy.png) no-repeat 0 0;
+}
+
+#watchlist div:hover .delete {
+	display: block;
+}
+#watchlist .delete:hover {
+	background-position: 0 -20px;
 }
