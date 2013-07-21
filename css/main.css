@@ -78,12 +78,28 @@ position:relative;
 z-index:5;
 }
 
-#search-list div {
-    height: 200px;
-    width: 200px;
-    margin: 15px;
-    display: inline-block;
+#watchlist {
+	width: 280px;
+	height: 1000px;
+	float: left;
+	display: block;
+	background-color: #bada55;
+
 }
+
+#search{
+	position: relative;
+	margin-left: 300px;
+	width: auto;
+}
+#search-list div {
+    height: 250px;
+    width: 250px;
+    float: left;
+    display: inline-block;
+    margin-top: 15px;
+}
+
 #stickies .todo-destroy {
 position: absolute;
 right: 5px;
@@ -101,16 +117,6 @@ display: block;
 background-position: 0 -20px;
 }
 
-#recycle-bin{
-position: absolute;
-
-right: 10px;
-bottom: 10px;
-width: 150px;
-height: 150px;
-background: gray;
-padding: 20px;
-}
 
 #recycle-bin p{
 position: relative;  

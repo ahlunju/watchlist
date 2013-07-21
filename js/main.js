@@ -26,31 +26,162 @@ require.config({
 
 });
 
-//require(['jquery', 'views/SearchView', 'collections/SearchCollection'],
-//function($, SearchView, AppCollection, SearchCollection){
-    // var search_view = new SearchView({
-    //     collection: SearchCollection
-    // });
-//});
+require(['jquery','backbone', 'vent','storage'], 
+function($, Backbone, vent, Store){
 
-require(['jquery','backbone','text!templates/results.html','storage'], 
-function($, Backbone, resultsTemplate, Store){
+    //Watchlist Module
 
-    var vent = {};
-    _.extend(vent, Backbone.Events);
+    //individual item of watchlist collection
+    var ShowModel = Backbone.Model.extend({
+        defaults: {
+            title : '',
+            thumbnail : ''
+        },
 
+        initialize: function() {
+            if (!this.get("title")) {
+                this.set({"title" : this.defaults.content});
+            }
+        },
+        saveItem: function(){
+            this.save();
+        },
+        //remove this model from localStorage
+        clear: function(){
+            this.destroy();
+        }
+    });
+
+    var ShowView = Backbone.View.extend({
+
+        events : {
+            'click .delete' : 'clear'
+        },
+
+        initialize : function() {
+            // The TodoView listens for changes to its model, re-rendering. Since there's
+            // a one-to-one correspondence between a **Todo** and a **TodoView** in this
+            // app, we set a direct reference on the model for convenience.
+            this.listenTo(this.model, 'change', this.render);
+            // in case the model is destroyed via a collection method
+            // and not by a user interaction from the DOM, the view
+            // should remove itself
+            this.listenTo(this.model, 'destroy', this.remove);
+        },
+
+        render : function() {
+            this.$el.html("<div><img src='"+ (this.model.get('thumbnail')) + "'>"+
+                    "<h2>"+(this.model.get('title'))+
+                    "</h2><button class = 'delete'>X</button></div>");
+            
+            return this;
+        },
+
+        remove: function() {
+            this.stopListening();
+            this.undelegateEvents();
+            this.$el.remove();
+        },
+
+        saveShow: function(){
+            this.model.saveItem();
+        },
+        // Remove the item, destroy the model.
+        clear: function() {
+            this.model.clear();
+        }
+    });
+
+    //watchlist collection
+    var WatchlistCollection = Backbone.Collection.extend({
+        model : ShowModel,
+
+        localStorage: new Store("show")
+
+
+    });
+
+    //watchlist collection view
+    var WatchlistView = Backbone.View.extend({
+        el: $('#watchlist'),
+
+
+
+        initialize: function(){
+            _.bindAll(this, 'addOne');
+            this.listenTo(vent, 'addToWatchlist', this.createItem);
+            this.listenTo(this.collection, 'add', this.addOne);
+            this.listenTo(this.collection, 'reset', this.addAll);
+            this.listenTo(this.collection, 'all', this.render);
+
+            this.collection.fetch();
+        },
+
+        render : function(){
+            console.log(this.collection.length);
+            console.log(this.collection.toJSON());
+            //this.$('#watchlist').html(this.collection);
+            return this;
+        },
+
+        addOne: function(fav){
+            console.log('added one to your watchlist');
+            console.log(fav);
+            var favShow = new ShowView({ model : fav} );
+            this.$el.append(favShow.render().el);
+        },
+
+        addAll: function() {
+            this.collection.each(this.addOne);
+        },
+
+        createItem: function(item){
+            console.log(item);
+            this.collection.create({
+                title : item.get('title'),
+                thumbnail : item.get('images').thumbnail
+            })
+        }
+
+    });
+
+    //an instance of watchlist collection
+    window.myWatchlistCollection = new WatchlistCollection();
+
+    //an instance of the Watchlist Collection view
+    window.myWatchlistView = new WatchlistView({
+        collection : myWatchlistCollection
+    });
+
+
+
+    //Search Module ----------------------------------------------------------
     // individual search result 
     var Result = Backbone.Model.extend({});
 
     // view of individual search result
     var ResultView = Backbone.View.extend({
 
+        events : {
+            'click .add-fav' : 'addFav'
+        },
+
         render : function() {
             
-            $(this.el).html("<div><img src='"+ this.model.get('images').thumbnail + "'>"+
-                    "<h2>"+this.model.get("title")+"</h2><button class = 'add-fav'>add to watchlist</button></div>");
+            this.$el.html("<div><img src='"+ (this.model.get('images').thumbnail) + "'>"+
+                    "<h2>"+this.model.get('title')+"</h2>"+
+                    "<button class='add-fav'>add to watchlist</button>"+
+                    "</div>");
             return this;
-        }
+        },
+
+        addFav: function(){
+                vent.trigger('addToWatchlist', this.model);
+                console.log(this.model.get('title'));
+                console.log(this.model.get('images').thumbnail);
+        },
+
+
     });
 
     var Results = Backbone.Collection.extend({
@@ -63,7 +194,6 @@ function($, Backbone, resultsTemplate, Store){
             return 'http://search.guide.getglue.com/objects?q='+this.value; ;
         },
         parse : function(data) {
-
             return data;
         }
     });
@@ -79,7 +209,7 @@ function($, Backbone, resultsTemplate, Store){
 
         initialize: function(){
             this.listenTo(this.collection, 'all', this.render);
-            //this.render();
+            //this.listenTo(this.collection, 'add', this.addOne);
         },
 
         render : function() {
@@ -93,178 +223,23 @@ function($, Backbone, resultsTemplate, Store){
             return this;
         },
 
+        addFav: function(){
+            this.$('.add-fav').click(function(){
+                vent.trigger('addToWatchlist');
+            });
+        },
         getURL : function(){
+            var that = this;
             console.log('getURL');
             this.collection.value = this.$("#new-search").val();
-            this.collection.fetch({reset : true});
+            this.collection.fetch({
+                reset : true
+            });
+            console.log(this.collection.toJSON());
         },
     });
 
     var myResults = new Results();
     var myResultsView = new ResultsView({ collection : myResults });
 
-    // var SearchModel = Backbone.Model.extend({
-
-    //     defaults: {
-    //         'score'         : '',
-    //         'title'         : '',
-    //         'type'          : '',
-    //         'object_key'    : '',
-    //         'image_url'     : '',
-    //         'id'            : '',
-    //         'image_wide_url': '',
-    //         'images'        : {
-    //                             'wide'      : '',
-    //                             'thumbnail' : ''
-    //                         } 
-    //     },
-
-    //     clear: function(){
-    //         this.destroy();
-    //     }
-
-
-    // });
-
-    // var SearchCollection = Backbone.Collection.extend({
-    //     model: SearchModel,
-    //     value: null,
-    //     url: function() { return 'http://search.guide.getglue.com/objects?q='+this.value; },
-    //     parse: function(response){
-    //         console.log(response);
-    //         return response;
-    //     }
-
-        // parse: function(response){
-        //     var result = {}
-        //     console.log('parsing');
-        //     console.log(response.length);
-        //     for (var i = 0; i < response.length; i++) {
-        //         console.log(response[i]);
-        //         result = response[i]; 
-           
-        //     };
-
-        //     return this.models;
-        // }
-    // });
-
-    // var SearchView = Backbone.View.extend({
-    //     el: $('#search'),
-
-    //     events: {
-    //         'keyup #new-search' : 'getURL'//,
-    //         //'click #begin-search' : 'getURL',
-    //         //'change #new-search': 'render'
-    //     },
-
-    //     initialize: function(){
-    //         this.listenTo(this.collection, 'all', this.render);
-    //         this.render();
-    //     },
-
-    //     getURL : function(){
-    //         console.log('getURL');
-    //         this.collection.value = this.$("#new-search").val();
-    //         this.collection.fetch({reset : true});
-    //         //console.log (this.collection.toJSON());
-    //         //this.render();
-    //     },
-
-
-    //     render: function(){
-            
-    //         this.$('#search-list').empty();
-
-    //         for (var i = 0; i < this.collection.length; i++){
-    //             this.$('#search-list').append("<div><img src='"+ this.collection.at([i]).get('images').thumbnail + "'>"+
-    //                 "<span><h2>"+this.collection.at([i]).get('title')+"</h2></span><button class = 'add-fav'>add to watchlist</button></div>");
-    //         }
-
-    //         return this;
-    //         //this.resetCollection();
-    //     },
-
-
-    //     // Remove this view from the DOM.
-    //     // Remove event listeners from: DOM, this.model
-    //     remove: function() {
-    //         this.stopListening();
-    //         this.undelegateEvents();
-    //         this.$el.remove();
-    //     },
-
-    //     // Remove the item, destroy the model.
-    //     clear: function() {
-    //         this.model.clear();
-    //     }
-
-    // });
-    // window.searchModel = new SearchModel();
-    // window.searchCollection = new SearchCollection({
-        
-    // });
-
-    // window.searchView = new SearchView({
-    //     collection :searchCollection
-    // });
-    
-
-
-    // var WatchlistModel = Backbone.Model.extend({
-
-    // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // var WatchlistCollection = Backbone.Collection.extend({
-    //     model: WatchlistModel,
-
-    //     localStorage: new Store(),
-
-    // });
-
-    
-    // var WatchlistView = Backbone.View.extend({
-    //     el: $('#watchlist'),
-
-    //     initialize: function(){
-    //         this.listenTo(this.collection, 'add', this.add);
-    //     },
-
-    //     render: function(){
-
-    //     },
-
-    //     add: function(todo) {
-    //         // console.log("added new todo item");
-    //         var view = new TodoView({model: todo});
-    //         // this.$("#todo-list").append(view.render().el);
-    //         console.log(view.render().el);
-    //         //add to the sticky note div
-    //         $("#stickies ul").append(view.render().el);
-    //     },
-    //     addAll: function() {
-    //         this.collection.each(this.add);
-    //     },
-    // });
-
-    // window.watchCollection = new WatchlistCollection();
-
-    // window.watchlistView = new WatchlistView({
-    //     collection: watchCollection
-    // });
 });
