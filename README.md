@@ -1,12 +1,12 @@
 This is a code excercise I worked on for an interview of a startup company in NYC in July 2013
 
-Libraries and frameworks used:
+=========
+Libraries and frameworks I used:
 - jQuery/jQueryUI
 - Backbone
 - Underscore
 - RequireJS
 
-=========
 Requirements:
 
 Your task is to create a simple “watchlist” application using the search API.
@@ -26,3 +26,4 @@ evaluated on your design skills, however your code should adequately express the
 breadth of your CSS knowledge. Your example will be evaluated in the latest stable version of
 Chrome, so you may (and are encouraged to) use the latest and greatest browser technologies
 and need not worry about browser compatibility.
+
