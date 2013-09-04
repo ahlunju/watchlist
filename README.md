@@ -1,4 +1,4 @@
-This is a code excercise I worked on for an interview of a startup company in NYC in July 2013
+Small Backbone app that searches from an API, and storing data in localstorage. Totally awesome.
 
 =========
 Libraries and frameworks I used:
